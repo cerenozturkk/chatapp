@@ -6,7 +6,7 @@
 
     <!-- Gece modu için farklı tema -->
     <style name="Theme.MyChat.Dark" parent="Theme.AppCompat.DayNight.DarkActionBar">
-        <!-- Gece modu için özelleştirmelerr-->
+        <!-- Gece modu için özelleştirmeler-->
     </style>
 </resources>
 
