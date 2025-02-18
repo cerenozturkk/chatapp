@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/HomeFragment"
-        android:name="com.example.mychat.fragment_home"
+        android:name="com.example.mychat.fragments.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/ChatFragment"
-        android:name="com.example.mychat.fragment_chat"
+        android:name="com.example.mychat.fragments.ChatFragment"
         android:label="fragment_chat"
         tools:layout="@layout/fragment_chat" >
         <action
@@ -31,7 +31,7 @@
     </fragment>
     <fragment
         android:id="@+id/SettingFragment"
-        android:name="com.example.mychat.fragment_setting"
+        android:name="com.example.mychat.fragments.SettingFragment"
         android:label="fragment_setting"
         tools:layout="@layout/fragment_setting" >
         <action
@@ -42,7 +42,7 @@
         android:id="@+id/chatFromHomeFragment"
         android:name="com.example.mychat.fragments.ChatFromHomeFragment"
         android:label="fragment_chat_from_home"
-        tools:layout="@layout/fragment_chat_from_home" >
+        tools:layout="@layout/fragment_chatfrom_home" >
         <action
             android:id="@+id/action_chatFromHomeFragment_to_HomeFragment"
             app:destination="@id/HomeFragment" />

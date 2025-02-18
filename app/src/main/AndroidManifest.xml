@@ -12,6 +12,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyChat"
         tools:targetApi="31">
+        <!-- Firebase Servisleri -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" />
+
+        <meta-data
+            android:name="com.google.firebase.auth.api.fallback_provider"
+            android:value="play-services" />
+
+        <meta-data
+            android:name="com.google.firebase.components:com.google.firebase.auth.FirebaseAuthRegistrar"
+            android:value="default" />
+
+        <meta-data
+            android:name="com.google.firebase.components:com.google.firebase.messaging.FirebaseMessagingRegistrar"
+            android:value="default" />
+
+
+
 
 
         <!-- Giriş Aktivitesi -->

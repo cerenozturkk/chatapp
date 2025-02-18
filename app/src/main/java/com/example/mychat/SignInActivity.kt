@@ -12,6 +12,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.FirebaseApp
 
 class SignInActivity : AppCompatActivity() {
 
@@ -48,10 +49,10 @@ class SignInActivity : AppCompatActivity() {
                 progressDialog.dismiss()  // Hata durumunda da progress dialog'u gizle
                 when (exception) {
                     is FirebaseAuthInvalidCredentialsException -> {
-                        Toast.makeText(this, "Invalid Credentials", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Invalid Credentials ${exception}", Toast.LENGTH_SHORT).show()
                     }
                     else -> {
-                        Toast.makeText(this, "Auth Failed", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Auth Failed ${exception}", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -60,45 +61,40 @@ class SignInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
 
-
         signInBinding = DataBindingUtil.setContentView(this, R.layout.activity_sign_in)
-        signInBinding.signInTextToSignUp.setOnClickListener {
 
+        // Firebase Auth başlat
+        FirebaseApp.initializeApp(this)
+        auth = FirebaseAuth.getInstance()
+
+        // Progress Dialog oluştur (önce oluşturulmalı)
+        progressDialog = AlertDialog.Builder(this)
+            .setView(R.layout.custom_progress_dialog)
+            .setCancelable(false)
+            .create()
+
+        signInBinding.signInTextToSignUp.setOnClickListener {
             startActivity(Intent(this, SignUpActivity::class.java))
         }
 
-
         signInBinding.loginButton.setOnClickListener {
-
             email = signInBinding.loginetmail.text.toString()
             password = signInBinding.loginetpassword.text.toString()
 
-            if (signInBinding.loginetmail.text.isEmpty()) {
-                Toast.makeText(this, "Empty cant be empty", Toast.LENGTH_SHORT).show()
-
+            if (email.isEmpty()) {
+                Toast.makeText(this, "Email can't be empty", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
 
-            if (signInBinding.loginetpassword.text.isEmpty()) {
-                Toast.makeText(this, "Password cant be empty", Toast.LENGTH_SHORT).show()
-
-            }
-            if (signInBinding.loginetpassword.text.isNotEmpty() && signInBinding.loginetmail.text.isNotEmpty()) {
-                signIn(password, email)
-
-
+            if (password.isEmpty()) {
+                Toast.makeText(this, "Password can't be empty", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
 
-
-            // Firebase Auth başlat
-            auth = FirebaseAuth.getInstance()
-
-            // Progress Dialog oluştur
-            progressDialog = AlertDialog.Builder(this)
-                .setView(R.layout.custom_progress_dialog)
-                .setCancelable(false)
-                .create()
+            signIn(password, email)
         }
-        }
+    }
+
     override fun onBackPressed(){ //geri tusuna basıldıgında uygulamanın varsayılan davranışını geri getirir.
         super.onBackPressed()
         progressDialog.dismiss()

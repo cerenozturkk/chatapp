@@ -2,7 +2,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.gms.google-services") version "4.4.0" apply false
     kotlin("plugin.serialization") version "2.0.21"
+
+
 }
 
 android {
@@ -63,13 +66,14 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation("de.hdodenhof:circleimageview:3.1.0")
-    implementation("com.google.firebase:firebase-auth:22.1.1")
+    implementation("com.google.firebase:firebase-auth:23.1.0")
     implementation(platform("com.google.firebase:firebase-bom:33.8.0"))
     implementation("com.google.firebase:firebase-firestore")
     implementation ("androidx.appcompat:appcompat:1.3.0")
     implementation ("com.google.android.material:material:1.9.0")
     implementation ("com.github.bumptech.glide:glide:4.15.1")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
+    implementation ("com.google.firebase:firebase-core:21.1.1")
 
 
 
@@ -90,3 +94,5 @@ dependencies {
     implementation(libs.androidx.navigation.ui)
 
 }
+apply(plugin = "com.google.gms.google-services")
+
