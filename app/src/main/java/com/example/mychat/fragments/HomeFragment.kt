@@ -9,8 +9,10 @@ import android.view.ViewGroup
 import android.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.mychat.R
 import com.example.mychat.adapter.OnUserClickListener
 import com.example.mychat.adapter.UserAdapter
@@ -22,66 +24,62 @@ import de.hdodenhof.circleimageview.CircleImageView
 
 
 @Suppress("DEPRECATION")
-class HomeFragment : Fragment() ,OnUserClickListener{
+class HomeFragment : Fragment(), OnUserClickListener {
 
-    lateinit var rvUsers:RecyclerView
+    lateinit var rvUsers: RecyclerView
     lateinit var userAdapter: UserAdapter
-    lateinit var userViewModel:ChatAppViewModel
-    lateinit var homebinding:FragmentHomeBinding
-    lateinit var fbauth:FirebaseAuth
-    lateinit var toolbar:Toolbar
-    lateinit var circleImageView:CircleImageView
-
-
-
+    lateinit var userViewModel: ChatAppViewModel
+    lateinit var homebinding: FragmentHomeBinding
+    lateinit var fbauth: FirebaseAuth
+    lateinit var toolbar: androidx.appcompat.widget.Toolbar  // doğru türde Toolbar kullanıyoruz
+    lateinit var circleImageView: CircleImageView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        homebinding=DataBindingUtil.inflate(inflater,R.layout.fragment_home, container, false)
-
+        homebinding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
         return homebinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        userViewModel=ViewModelProvider(this).get(ChatAppViewModel::class.java)
-        fbauth=FirebaseAuth.getInstance()
-        toolbar=view.findViewById(R.id.toolbarMain)
-        circleImageView=toolbar.findViewById(R.id.tlImage)
+        userViewModel = ViewModelProvider(this).get(ChatAppViewModel::class.java)
+        fbauth = FirebaseAuth.getInstance()
 
+        // Toolbar'ı doğru türde alıyoruz
+        toolbar = view.findViewById(R.id.toolbarMain) as androidx.appcompat.widget.Toolbar
+        circleImageView = toolbar.findViewById(R.id.tlImage)
 
+        homebinding.lifecycleOwner = viewLifecycleOwner
 
+        userAdapter = UserAdapter()
+        rvUsers = view.findViewById(R.id.rvUsers)
 
-        userAdapter=UserAdapter()
-        rvUsers=view.findViewById(R.id.rvUsers)
-
-        val layoutManagerUsers=LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL,false)
-        rvUsers.layoutManager=layoutManagerUsers
+        val layoutManagerUsers = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        rvUsers.layoutManager = layoutManagerUsers
 
         userViewModel.getUsers().observe(viewLifecycleOwner, {
-
             userAdapter.setUserList(it)
             userAdapter.setOnUserClickListener(this)
-            rvUsers.adapter=userAdapter
-
-
-
+            rvUsers.adapter = userAdapter
         })
 
-        homebinding.logOut.setOnClickListener{
+        homebinding.logOut.setOnClickListener {
             fbauth.signOut()
-
-
+            findNavController().navigate(R.id.action_HomeFragment_to_ChatFragment)
         }
+
+        userViewModel.imageUrl.observe(viewLifecycleOwner, { url ->
+            Glide.with(requireContext())
+                .load(url)
+                .into(circleImageView)
+        })
     }
 
     override fun onUserSelected(position: Int, users: Users) {
-
+        // Implement the user selection logic here
     }
-
-
 }
+

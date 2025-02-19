@@ -19,45 +19,29 @@ import java.security.KeyStore.TrustedCertificateEntry
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var navController:NavController
+    private lateinit var navController: NavController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val navHostFrag=supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        navController=navHostFrag.navController
-
-
-
-
-
-}
-
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed(){
-        super.onBackPressed()
-
-
-        if(supportFragmentManager.backStackEntryCount>0){
-            super.onBackPressed()
-
-
-
-        }
-        else{
-
-            if(navController.currentDestination?.id==R.id.HomeFragment){
-
-                moveTaskToBack(true)
-            }else{
-
-                super.onBackPressed()
-            }
-
-
-        }
+        // FragmentContainerView doğru şekilde kullanılarak navController başlatılmalı
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navController = navHostFragment.navController
     }
 
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        super.onBackPressed()
 
-
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            super.onBackPressed()
+        } else {
+            if (navController.currentDestination?.id == R.id.HomeFragment) {
+                moveTaskToBack(true)
+            } else {
+                super.onBackPressed()
+            }
+        }
+    }
 }
