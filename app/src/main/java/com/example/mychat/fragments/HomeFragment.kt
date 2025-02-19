@@ -48,7 +48,7 @@ class HomeFragment : Fragment(), OnUserClickListener {
         userViewModel = ViewModelProvider(this).get(ChatAppViewModel::class.java)
         fbauth = FirebaseAuth.getInstance()
 
-        // Toolbar'ı doğru türde alıyoruzz
+        // Toolbar'ı doğru türde alıyoruzzz
         toolbar = view.findViewById(R.id.toolbarMain) as androidx.appcompat.widget.Toolbar
         circleImageView = toolbar.findViewById(R.id.tlImage)
 
