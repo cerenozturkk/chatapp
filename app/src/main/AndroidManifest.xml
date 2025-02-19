@@ -33,7 +33,7 @@
 
 
 
-        <!-- Giriş Aktivitesi -->
+        <!-- Giriş Aktivitesii -->
         <activity
             android:name=".SignInActivity"
             android:exported="true"
