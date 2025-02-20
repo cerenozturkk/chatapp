@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_ChatFragment_to_HomeFragment"
             app:destination="@id/HomeFragment" />
+        <argument
+            android:name="users"
+            app:argType="com.example.mychat.modal.Users" />
     </fragment>
     <fragment
         android:id="@+id/SettingFragment"

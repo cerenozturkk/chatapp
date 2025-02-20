@@ -2,13 +2,16 @@ package com.example.mychat.fragments
 
 import android.app.ProgressDialog
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import android.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -79,7 +82,15 @@ class HomeFragment : Fragment(), OnUserClickListener {
     }
 
     override fun onUserSelected(position: Int, users: Users) {
-        // Implement the user selection logic here
+
+        val action=HomeFragmentDirections.actionHomeFragmentToChatFragment(users)
+        view?.findNavController()?.navigate(action)
+
+        Log.e("HOMEFRAGMENT","ClickedOn${users.username}")
+
+        //Toast.makeText(requireContext(),"ClickedOn${users.username}",Toast.LENGTH_SHORT).show()
+
+
     }
 }
 

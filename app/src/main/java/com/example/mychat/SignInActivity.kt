@@ -98,7 +98,7 @@ class SignInActivity : AppCompatActivity() {
     override fun onBackPressed(){ //geri tusuna basıldıgında uygulamanın varsayılan davranışını geri getirir.
         super.onBackPressed()
         progressDialog.dismiss()
-        finish()
+        finishAffinity()
         }
 
     override fun onDestroy() {

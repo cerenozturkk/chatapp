@@ -1,14 +1,38 @@
 package com.example.mychat.fragments
 
+import android.media.Image
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
+import com.bumptech.glide.Glide
 import com.example.mychat.R
+import com.example.mychat.databinding.FragmentChatBinding
+import com.example.mychat.mvvm.ChatAppViewModel
+import de.hdodenhof.circleimageview.CircleImageView
 
 
 class ChatFragment : Fragment() {
+
+
+    private lateinit var args:ChatFragmentArgs
+    private lateinit var chatbinding:FragmentChatBinding
+    private lateinit var chatAppViewModel: ChatAppViewModel
+    private lateinit var chattoolbar:Toolbar
+    private lateinit var circleImageView:CircleImageView
+    private lateinit var tvusername:TextView
+    private lateinit var tvStatus:TextView
+    private lateinit var backbtn:ImageView
+
+
+
 
 
     override fun onCreateView(
@@ -16,7 +40,50 @@ class ChatFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chat, container, false)
+        chatbinding=DataBindingUtil.inflate(inflater,R.layout.fragment_chat,container,false)
+
+        return chatbinding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        args=ChatFragmentArgs.fromBundle(requireArguments())
+        chatAppViewModel=ViewModelProvider(this).get(ChatAppViewModel::class.java)
+
+        chattoolbar = chatbinding.toolBarChat
+
+        circleImageView=view.findViewById(R.id.chatImageViewUser)
+
+        tvStatus=view.findViewById(R.id.chatUserStatus)
+        tvusername=view.findViewById(R.id.chatUserName)
+        backbtn=chattoolbar.findViewById(R.id.chatBackBtn)
+
+        backbtn.setOnClickListener{
+            view.findNavController().navigate(R.id.action_ChatFragment_to_HomeFragment)
+
+
+
+
+
+        }
+
+
+
+        chatbinding.chatBackBtn.setOnClickListener{
+            view.findNavController().navigate((R.id.action_ChatFragment_to_HomeFragment))
+
+
+        }
+
+        Glide.with(requireContext()).load(args.users.imageUrl).into(circleImageView)
+        tvStatus.setText(args.users.status)
+        tvusername.setText(args.users.username)
+        chatbinding.viewModel=chatAppViewModel
+        chatbinding.lifecycleOwner=viewLifecycleOwner
+
+
+
     }
 
 
