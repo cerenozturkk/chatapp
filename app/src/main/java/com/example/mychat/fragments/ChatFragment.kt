@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.example.mychat.R
+import com.example.mychat.Utils
 import com.example.mychat.databinding.FragmentChatBinding
 import com.example.mychat.mvvm.ChatAppViewModel
 import de.hdodenhof.circleimageview.CircleImageView
@@ -81,6 +82,13 @@ class ChatFragment : Fragment() {
         tvusername.setText(args.users.username)
         chatbinding.viewModel=chatAppViewModel
         chatbinding.lifecycleOwner=viewLifecycleOwner
+
+
+        chatbinding.sendBtn.setOnClickListener{
+            chatAppViewModel.sendMessage(Utils.getUiLoggedIn(),args.users.userid!!,args.users.username!!,args.users.imageUrl!!)
+
+
+        }
 
 
 

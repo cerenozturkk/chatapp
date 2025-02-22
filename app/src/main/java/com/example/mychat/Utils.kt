@@ -1,6 +1,8 @@
 package com.example.mychat
 
 import com.google.firebase.auth.FirebaseAuth
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class Utils {
 
@@ -18,6 +20,17 @@ class Utils {
 
             }
             return userid
+
+
+
+        }
+
+        fun getTime():String{
+            val formatter=SimpleDateFormat("HH:mm:ss")
+            val date: Date= Date(System.currentTimeMillis())
+            val stringdate=formatter.format(date)
+
+            return stringdate
 
 
 

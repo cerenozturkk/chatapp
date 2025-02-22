@@ -9,9 +9,10 @@ import com.example.mychat.SharedPrefs
 import com.example.mychat.modal.Users
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.installations.Utils
+import com.example.mychat.Utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+
 
 
 class ChatAppViewModel :ViewModel() {
@@ -67,4 +68,49 @@ class ChatAppViewModel :ViewModel() {
 
                 }
             }
-    }}
+    }
+
+    //SEND MESSAGE
+    fun sendMessage(sender:String,receiver:String,friendname:String,friendimage:String)=viewModelScope.launch(Dispatchers.IO){
+
+        val context=MyApplication.instance.applicationContext
+
+        val hashMap= hashMapOf<String,Any>(
+            "sender" to sender,"receiver" to receiver,"message" to message.value!!,"time" to Utils.getTime()
+        )
+
+        val uniqueId= listOf(sender,receiver).sorted()
+        uniqueId.joinToString(separator="")
+
+        val friendnamesplit=friendname.split("\\s".toRegex())[0]
+        val mysharedPrefs=SharedPrefs(context)
+
+
+        mysharedPrefs.setValue("friendid",receiver)
+        mysharedPrefs.setValue("chatroomid",uniqueId.toString())
+        mysharedPrefs.setValue("friendname",friendnamesplit)
+        mysharedPrefs.setValue("friendimage",friendimage)
+
+        //sending message
+
+
+        firestore.collection("Messages").document(uniqueId.toString())
+            .collection("chats").document(Utils.getTime()).set(hashMap).addOnCompleteListener{ task->
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+    }
+
+
+
+}
