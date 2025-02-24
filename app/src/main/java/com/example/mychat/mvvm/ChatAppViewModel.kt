@@ -1,5 +1,6 @@
 package com.example.mychat.mvvm
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,6 +11,7 @@ import com.example.mychat.modal.Users
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.example.mychat.Utils
+import com.example.mychat.modal.Messages
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -17,22 +19,24 @@ import kotlinx.coroutines.launch
 
 class ChatAppViewModel :ViewModel() {
 
-    val name=MutableLiveData<String>()
-    val imageUrl=MutableLiveData<String>()
-    val message=MutableLiveData<String>()
-    private val firestore=FirebaseFirestore.getInstance()
+    val name = MutableLiveData<String>()
+    val imageUrl = MutableLiveData<String>()
+    val message = MutableLiveData<String>()
+    private val firestore = FirebaseFirestore.getInstance()
 
 
-    val usersRepo=UsersRepo()
+    val usersRepo = UsersRepo()
+    val messagesRepo=MessageRepo()
 
-    init{
+
+    init {
         getCurrentUser()
 
 
     }
 
 
-    fun getUsers():LiveData<List<Users>>{
+    fun getUsers(): LiveData<List<Users>> {
 
         return usersRepo.getUsers()
 
@@ -63,54 +67,95 @@ class ChatAppViewModel :ViewModel() {
                     name.postValue(users?.username ?: "Bilinmeyen Kullanıcı")
                     imageUrl.postValue(users?.imageUrl ?: "")
 
-                    val mySharedPrefs= SharedPrefs(MyApplication.instance.applicationContext)
-                    mySharedPrefs.setValue("username",users?.username?:"bilinmeyen kullanıcı")
+                    val mySharedPrefs = SharedPrefs(MyApplication.instance.applicationContext)
+                    mySharedPrefs.setValue("username", users?.username ?: "bilinmeyen kullanıcı")
 
                 }
             }
     }
 
     //SEND MESSAGE
-    fun sendMessage(sender:String,receiver:String,friendname:String,friendimage:String)=viewModelScope.launch(Dispatchers.IO){
+    fun sendMessage(sender: String, receiver: String, friendname: String, friendimage: String) =
+        viewModelScope.launch(Dispatchers.IO) {
 
-        val context=MyApplication.instance.applicationContext
+            val context = MyApplication.instance.applicationContext
 
-        val hashMap= hashMapOf<String,Any>(
-            "sender" to sender,"receiver" to receiver,"message" to message.value!!,"time" to Utils.getTime()
-        )
+            val msg = message.value ?: return@launch // Eğer mesaj null ise fonksiyondan çık
 
-        val uniqueId= listOf(sender,receiver).sorted()
-        uniqueId.joinToString(separator="")
+            val loggedInUser = Utils.getUiLoggedIn()
+            if (loggedInUser.isNullOrEmpty()) {
+                Log.e("ChatAppViewModel", "getUiLoggedIn() null döndü!")
+                return@launch
+            }
 
-        val friendnamesplit=friendname.split("\\s".toRegex())[0]
-        val mysharedPrefs=SharedPrefs(context)
+            val hashMap = hashMapOf<String, Any>(
+                "sender" to sender,
+                "receiver" to receiver,
+                "message" to msg,
+                "time" to Utils.getTime()
+            )
+
+            val uniqueId = listOf(sender, receiver).sorted().joinToString(separator = "")
+
+            val friendnamesplit = friendname.split("\\s".toRegex())[0]
+            val mysharedPrefs = SharedPrefs(context)
+
+            mysharedPrefs.setValue("friendid", receiver)
+            mysharedPrefs.setValue("chatroomid", uniqueId)
+            mysharedPrefs.setValue("friendname", friendnamesplit)
+            mysharedPrefs.setValue("friendimage", friendimage)
+
+            // Mesajı Firestore'a gönderme
+            firestore.collection("Messages").document(uniqueId)
+                .collection("chats").document(Utils.getTime()).set(hashMap)
+                .addOnCompleteListener { task ->
+                    if (!task.isSuccessful) {
+                        Log.e("ChatAppViewModel", "Mesaj gönderme başarısız", task.exception)
+                        return@addOnCompleteListener
+                    }
+
+                    val hashMapForRecent = hashMapOf<String, Any>(
+                        "friendid" to receiver,
+                        "time" to Utils.getTime(),
+                        "sender" to loggedInUser,
+                        "message" to msg,
+                        "friendsimage" to friendimage,
+                        "name" to friendname,
+                        "person" to "you"
+                    )
 
 
-        mysharedPrefs.setValue("friendid",receiver)
-        mysharedPrefs.setValue("chatroomid",uniqueId.toString())
-        mysharedPrefs.setValue("friendname",friendnamesplit)
-        mysharedPrefs.setValue("friendimage",friendimage)
+                    firestore.collection("Conversation")
+                        .document(uniqueId.toString()) // Bu, sohbet ID'sini içeren ana belge
+                        .collection("Chats") // Alt koleksiyon olarak "Chats" kullanılıyor
+                        .add(hashMap) // add() kullanarak yeni bir belge oluşturuluyor
 
-        //sending message
+                    firestore.collection("Conversation")
+                        .document(uniqueId)  // uniqueId burada kullanılıyor
+                        .collection("Chats")
+                        .document(loggedInUser)  // Belgeyi güncellerken loggedInUser kullanılıyor
+                        .update(
+                            "message", msg,
+                            "time", Utils.getTime(),
+                            "person", name.value ?: "Bilinmeyen Kullanıcı"
+                        )
 
 
-        firestore.collection("Messages").document(uniqueId.toString())
-            .collection("chats").document(Utils.getTime()).set(hashMap).addOnCompleteListener{ task->
+                    if(task.isSuccessful){
+                        message.value=""
 
 
 
-
-
-
+                    }
+                }
         }
 
+    fun getMessages(friendid:String):LiveData<List<Messages>>{
 
-
-
-
+        return messagesRepo.getMessages(friendid)
 
     }
-
-
-
 }
+
+
+
