@@ -10,5 +10,6 @@ package com.example.mychat.modal
 
 
      val id:String get()="$sender-$receiver-$message-$time"
+
  }
 

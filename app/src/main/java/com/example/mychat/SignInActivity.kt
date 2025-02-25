@@ -63,11 +63,14 @@ class SignInActivity : AppCompatActivity() {
 
         signInBinding = DataBindingUtil.setContentView(this, R.layout.activity_sign_in)
 
-        // Firebase Auth başlat
-        FirebaseApp.initializeApp(this)
+        // Firebase App'in başlatıldığından emin ol
+        if (FirebaseApp.getApps(this).isEmpty()) {
+            FirebaseApp.initializeApp(this)
+        }
+
         auth = FirebaseAuth.getInstance()
 
-        // Progress Dialog oluştur (önce oluşturulmalı)
+        // Progress Dialog oluştur
         progressDialog = AlertDialog.Builder(this)
             .setView(R.layout.custom_progress_dialog)
             .setCancelable(false)
@@ -94,6 +97,7 @@ class SignInActivity : AppCompatActivity() {
             signIn(password, email)
         }
     }
+
 
     override fun onBackPressed(){ //geri tusuna basıldıgında uygulamanın varsayılan davranışını geri getirir.
         super.onBackPressed()

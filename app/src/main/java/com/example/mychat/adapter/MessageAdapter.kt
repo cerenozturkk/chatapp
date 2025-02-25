@@ -64,7 +64,8 @@ class MessageAdapter:RecyclerView.Adapter<MessageHolder>(){
 
 
     fun setMessageList(newList:List<Messages>){
-        this.listOfMessage
+        this.listOfMessage = newList // Listeyi güncelle
+        notifyDataSetChanged() // RecyclerView'u güncelle
 
 
 

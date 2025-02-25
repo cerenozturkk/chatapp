@@ -6,12 +6,12 @@ plugins {
     id ("androidx.navigation.safeargs.kotlin") version "2.7.5"
     kotlin("plugin.serialization") version "2.0.21"
 
-
 }
 
 android {
     buildFeatures {
         dataBinding = true
+        compose = true
     }
 
     namespace = "com.example.mychat"
@@ -43,13 +43,9 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-    buildFeatures {
-        compose = true
-    }
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -77,13 +73,6 @@ dependencies {
     implementation ("com.google.firebase:firebase-core:21.1.1")
     implementation ("androidx.navigation:navigation-fragment-ktx:2.7.5")
     implementation ("androidx.navigation:navigation-ui-ktx:2.7.5")
-
-
-
-
-
-
-
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -96,6 +85,6 @@ dependencies {
     implementation(libs.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
 
+
 }
 apply(plugin = "com.google.gms.google-services")
-
