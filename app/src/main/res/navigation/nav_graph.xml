@@ -49,5 +49,8 @@
         <action
             android:id="@+id/action_chatFromHomeFragment_to_HomeFragment"
             app:destination="@id/HomeFragment" />
+        <argument
+            android:name="recentchats"
+            app:argType="com.example.mychat.modal.RecentChats" />
     </fragment>
 </navigation>

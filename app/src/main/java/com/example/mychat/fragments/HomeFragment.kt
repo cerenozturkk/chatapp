@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.Toolbar
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -17,9 +18,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.mychat.R
+import com.example.mychat.adapter.OnRecentChatClicked
 import com.example.mychat.adapter.OnUserClickListener
+import com.example.mychat.adapter.RecentChatAdapter
 import com.example.mychat.adapter.UserAdapter
 import com.example.mychat.databinding.FragmentHomeBinding
+import com.example.mychat.modal.RecentChats
 import com.example.mychat.modal.Users
 import com.example.mychat.mvvm.ChatAppViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -27,15 +31,16 @@ import de.hdodenhof.circleimageview.CircleImageView
 
 
 @Suppress("DEPRECATION")
-class HomeFragment : Fragment(), OnUserClickListener {
+class HomeFragment : Fragment(), OnUserClickListener, OnRecentChatClicked {
 
     lateinit var rvUsers: RecyclerView
     lateinit var userAdapter: UserAdapter
     lateinit var userViewModel: ChatAppViewModel
     lateinit var homebinding: FragmentHomeBinding
     lateinit var fbauth: FirebaseAuth
-    lateinit var toolbar: androidx.appcompat.widget.Toolbar  // doğru türde Toolbar kullanıyoruz
+    lateinit var toolbar: androidx.appcompat.widget.Toolbar
     lateinit var circleImageView: CircleImageView
+    lateinit var recentchatadapter:  RecentChatAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,7 +56,7 @@ class HomeFragment : Fragment(), OnUserClickListener {
         userViewModel = ViewModelProvider(this).get(ChatAppViewModel::class.java)
         fbauth = FirebaseAuth.getInstance()
 
-        // Toolbar'ı doğru türde alıyoruzzz
+
         toolbar = view.findViewById(R.id.toolbarMain) as androidx.appcompat.widget.Toolbar
         circleImageView = toolbar.findViewById(R.id.tlImage)
 
@@ -79,6 +84,28 @@ class HomeFragment : Fragment(), OnUserClickListener {
                 .load(url)
                 .into(circleImageView)
         })
+
+        recentchatadapter=RecentChatAdapter()
+
+        userViewModel.getRecentChats().observe(viewLifecycleOwner, Observer{
+
+            homebinding.rvRecentChats.layoutManager=LinearLayoutManager(activity)
+
+
+            recentchatadapter.setOnRecentList(it)
+            homebinding.rvRecentChats.adapter=recentchatadapter
+
+
+
+        })
+
+
+        recentchatadapter.setOnRecentChatListener(this)
+
+
+
+
+
     }
 
     override fun onUserSelected(position: Int, users: Users) {
@@ -92,5 +119,11 @@ class HomeFragment : Fragment(), OnUserClickListener {
 
 
     }
+
+    override fun getOnRecentChatClicked(position: Int, recentChat: RecentChats) {
+
+    }
+
+
 }
 
