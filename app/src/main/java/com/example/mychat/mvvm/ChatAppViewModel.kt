@@ -159,10 +159,7 @@ class ChatAppViewModel :ViewModel() {
     }
     fun getRecentChats():LiveData<List<RecentChats>>{
 
-       return recentChatRepo.getAllChatList()
+        return recentChatRepo.getAllChatList()
 
     }
 }
-
-
-

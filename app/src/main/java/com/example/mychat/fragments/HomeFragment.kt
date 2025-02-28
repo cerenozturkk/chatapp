@@ -122,6 +122,10 @@ class HomeFragment : Fragment(), OnUserClickListener, OnRecentChatClicked {
 
     override fun getOnRecentChatClicked(position: Int, recentChat: RecentChats) {
 
+        val action=HomeFragmentDirections.actionHomeFragmentToChatFromHomeFragment(recentChat)
+
+        view?.findNavController()?.navigate(action)
+
     }
 
 
