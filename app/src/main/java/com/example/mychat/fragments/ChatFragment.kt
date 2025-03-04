@@ -19,7 +19,9 @@ import com.example.mychat.Utils
 import com.example.mychat.adapter.MessageAdapter
 import com.example.mychat.databinding.FragmentChatBinding
 import com.example.mychat.modal.Messages
+import com.example.mychat.modal.Users
 import com.example.mychat.mvvm.ChatAppViewModel
+import com.google.firebase.firestore.auth.User
 import de.hdodenhof.circleimageview.CircleImageView
 
 class ChatFragment : Fragment() {
@@ -33,6 +35,7 @@ class ChatFragment : Fragment() {
     private lateinit var tvStatus: TextView
     private lateinit var backbtn: ImageView
     private lateinit var messageAdapter: MessageAdapter
+    private var user: Users?=null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,8 +47,11 @@ class ChatFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        args = ChatFragmentArgs.fromBundle(requireArguments()) // args burada başlatılıyor
 
-        args = ChatFragmentArgs.fromBundle(requireArguments())
+        arguments?.let {
+            user = ChatFragmentArgs.fromBundle(it).users
+        }
         chatAppViewModel = ViewModelProvider(this).get(ChatAppViewModel::class.java)
 
         chattoolbar = chatbinding.toolBarChat

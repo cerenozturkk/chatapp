@@ -12,7 +12,7 @@ import com.example.mychat.modal.RecentChats
 
 class RecentChatAdapter : RecyclerView.Adapter<RecentChatHolder>() {
 
-    private var listOfChats = listOf<RecentChats>()
+    private var listOfChats = mutableListOf<RecentChats>()
     private var listener: OnRecentChatClicked? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecentChatHolder {
@@ -29,10 +29,10 @@ class RecentChatAdapter : RecyclerView.Adapter<RecentChatHolder>() {
 
         holder.userName.text = recentChat.name
 
-        val theMessage = recentChat.message?.split("")?.take(4)?.joinToString("") ?: ""
-        val makeLastMessage = "${recentChat.person}: $theMessage"
+        val shortenedMessage = recentChat.message?.take(10) ?: "Mesaj yok"
+        val formattedMessage = "${recentChat.person}: $shortenedMessage"
 
-        holder.lastMessage.text = makeLastMessage
+        holder.lastMessage.text = formattedMessage
 
         Glide.with(holder.itemView.context)
             .load(recentChat.friendsimage)
@@ -50,9 +50,10 @@ class RecentChatAdapter : RecyclerView.Adapter<RecentChatHolder>() {
     }
 
     fun setOnRecentList(list: List<RecentChats>) {
-        this.listOfChats = list
-        notifyDataSetChanged() // Liste güncellendiğinde RecyclerView'i yenile
-    }
+        listOfChats.clear()
+        listOfChats.addAll(list)
+        notifyDataSetChanged()
+     }
 }
 
 
@@ -67,3 +68,4 @@ class RecentChatHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 interface OnRecentChatClicked {
     fun getOnRecentChatClicked(position: Int, recentChat: RecentChats)
 }
+

@@ -88,15 +88,12 @@ class HomeFragment : Fragment(), OnUserClickListener, OnRecentChatClicked {
         recentchatadapter=RecentChatAdapter()
 
         userViewModel.getRecentChats().observe(viewLifecycleOwner, Observer{
+            Log.d("HomeFragment", "Recent Chats: $it")
 
             homebinding.rvRecentChats.layoutManager=LinearLayoutManager(activity)
 
-
             recentchatadapter.setOnRecentList(it)
             homebinding.rvRecentChats.adapter=recentchatadapter
-
-
-
         })
 
 

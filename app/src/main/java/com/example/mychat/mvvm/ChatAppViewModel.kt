@@ -13,6 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.example.mychat.Utils
 import com.example.mychat.modal.Messages
 import com.example.mychat.modal.RecentChats
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -127,30 +128,22 @@ class ChatAppViewModel :ViewModel() {
                     )
 
 
-                    firestore.collection("Conversation")
-                        .document(uniqueId.toString()) // Bu, sohbet ID'sini içeren ana belge
-                        .collection("Chats") // Alt koleksiyon olarak "Chats" kullanılıyor
-                        .add(hashMap) // add() kullanarak yeni bir belge oluşturuluyor
+                    firestore.collection("Conversation${Utils.getUiLoggedIn()}").document(receiver)
+                        .set(hashMapForRecent, SetOptions.merge())
 
-                    firestore.collection("Conversation")
-                        .document(uniqueId)  // uniqueId burada kullanılıyor
-                        .collection("Chats")
-                        .document(loggedInUser)  // Belgeyi güncellerken loggedInUser kullanılıyor
-                        .update(
-                            "message", msg,
-                            "time", Utils.getTime(),
-                            "person", name.value ?: "Bilinmeyen Kullanıcı"
-                        )
+                    firestore.collection("Conversation$receiver").document(Utils.getUiLoggedIn())
+                        .set(mapOf(
+                            "message" to msg,
+                            "time" to Utils.getTime(),
+                            "person" to sender
+                        ), SetOptions.merge())
 
-
-                    if(task.isSuccessful){
-                        message.value=""
-
-
-
+                    if (task.isSuccessful) {
+                        message.postValue("")
                     }
                 }
         }
+
 
     fun getMessages(friendid:String):LiveData<List<Messages>>{
 
