@@ -79,10 +79,15 @@ class HomeFragment : Fragment(), OnUserClickListener, OnRecentChatClicked {
             findNavController().navigate(R.id.action_HomeFragment_to_ChatFragment)
         }
 
+        homebinding.tlImage.setOnClickListener{
+            findNavController().navigate(R.id.action_HomeFragment_to_SettingFragment)
+        }
+
         userViewModel.imageUrl.observe(viewLifecycleOwner, { url ->
             Glide.with(requireContext())
                 .load(url)
                 .into(circleImageView)
+
         })
 
         recentchatadapter=RecentChatAdapter()

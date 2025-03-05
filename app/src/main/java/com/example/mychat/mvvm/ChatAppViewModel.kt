@@ -155,4 +155,8 @@ class ChatAppViewModel :ViewModel() {
         return recentChatRepo.getAllChatList()
 
     }
+
+    fun updateProfile() {
+        TODO("Not yet implemented")
+    }
 }
