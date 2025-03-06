@@ -79,9 +79,14 @@ class HomeFragment : Fragment(), OnUserClickListener, OnRecentChatClicked {
             findNavController().navigate(R.id.action_HomeFragment_to_ChatFragment)
         }
 
-        homebinding.tlImage.setOnClickListener{
-            findNavController().navigate(R.id.action_HomeFragment_to_SettingFragment)
+        homebinding.tlImage.setOnClickListener {
+            try {
+                findNavController().navigate(R.id.action_HomeFragment_to_SettingFragment)
+            } catch (e: Exception) {
+                Log.e("NavigationError", "Hata: ${e.message}")
+            }
         }
+
 
         userViewModel.imageUrl.observe(viewLifecycleOwner, { url ->
             Glide.with(requireContext())

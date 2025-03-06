@@ -11,8 +11,11 @@ import android.content.Intent
 import android.widget.EditText
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.FirebaseApp
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.analytics
 
 class SignInActivity : AppCompatActivity() {
 
@@ -22,6 +25,7 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var progressDialog: AlertDialog
     private lateinit var signInBinding:ActivitySignInBinding
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
 
     private fun signIn(password: String, email: String) {
@@ -62,13 +66,14 @@ class SignInActivity : AppCompatActivity() {
         setContentView(R.layout.activity_sign_in)
 
         signInBinding = DataBindingUtil.setContentView(this, R.layout.activity_sign_in)
-
+        firebaseAnalytics = Firebase.analytics
         // Firebase App'in başlatıldığından emin ol
         if (FirebaseApp.getApps(this).isEmpty()) {
             FirebaseApp.initializeApp(this)
         }
 
         auth = FirebaseAuth.getInstance()
+
 
         // Progress Dialog oluştur
         progressDialog = AlertDialog.Builder(this)

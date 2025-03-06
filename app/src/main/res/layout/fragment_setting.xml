@@ -66,7 +66,6 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:background="@android:color/transparent"
                 app:boxBackgroundColor="@android:color/transparent">
 

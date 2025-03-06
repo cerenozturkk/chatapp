@@ -114,30 +114,14 @@ class SettingFragment : Fragment() {
                 }
             }
             builder.show()
-
-
-
-
-
-
         }
-
-
-
     }
-
-
-
     private fun loadImage(imageUrl: String) {
-
-
-
-
         Glide.with(requireContext()).load(imageUrl).placeholder(R.drawable.person).dontAnimate()
             .into(binding.settingUpdateImage)
-
-
     }
+
+
 
     @SuppressLint("QueryPermissionsNeeded")
     private fun pickImageFromGallery() {

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.MyChat" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Buraya özelleştirmeler ekleyebilirsinn -->
+    <style name="Theme.MyChat" parent="Theme.MaterialComponents.Light.DarkActionBar">
+
+    <!-- Buraya özelleştirmeler ekleyebilirsinn -->
     </style>
 
 </resources>

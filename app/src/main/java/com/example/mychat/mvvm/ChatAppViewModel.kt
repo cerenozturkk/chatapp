@@ -1,6 +1,7 @@
 package com.example.mychat.mvvm
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -34,6 +35,7 @@ class ChatAppViewModel :ViewModel() {
 
     init {
         getCurrentUser()
+        getRecentChats()
 
 
     }
@@ -156,7 +158,31 @@ class ChatAppViewModel :ViewModel() {
 
     }
 
-    fun updateProfile() {
-        TODO("Not yet implemented")
+    fun updateProfile()=viewModelScope.launch(Dispatchers.IO) {
+
+        val context=MyApplication.instance.applicationContext
+        val hashMapUser= hashMapOf<String,Any>("username" to name.value!!,"imageUrl" to imageUrl.value!!)
+        firestore.collection("Users").document(Utils.getUiLoggedIn()).update(hashMapUser).addOnCompleteListener{ task->
+
+            if(task.isSuccessful){
+
+                Toast.makeText(context,"UPDATED",Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        val mysharedPrefs=SharedPrefs(context)
+        val friendid=mysharedPrefs.getValue("friendid")
+
+        val hashMapUpDATE= hashMapOf<String,Any>("friendsimage" to imageUrl.value!!,
+            "name" to name.value!!,"person" to name.value!!)
+        //updating the chatlist,recent list message,image etc
+        if(friendid!=null) {
+
+            firestore.collection("Conversation${friendid}").document(Utils.getUiLoggedIn())
+                .update(hashMapUpDATE)
+            firestore.collection("Conversation${Utils.getUiLoggedIn()}").document(friendid!!)
+                .update("person", "you")
+
+        }
     }
 }
